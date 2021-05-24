@@ -7,12 +7,18 @@ import lombok.EqualsAndHashCode;
 public abstract class Event {
 
     private final UUID id;
+    private final UUID aggregateId;
 
-    protected Event(final UUID id) {
+    protected Event(final UUID id, final UUID aggregateId) {
         this.id = id;
+        this.aggregateId = aggregateId;
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public UUID getAggregateId() {
+        return aggregateId;
     }
 }
