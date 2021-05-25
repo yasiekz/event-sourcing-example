@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("rawtypes")
 @RequiredArgsConstructor
 @Slf4j
 @Component
@@ -20,11 +21,11 @@ public class MongoEventStore implements EventStore {
     private final EventWrapperFactory eventWrapperFactory;
 
     @Override
-    public void save(final Event event, final int version) {
+    public void save(final Event<?> event, final int version) {
 
         try {
             final EventWrapper wrapper = eventWrapperFactory.create(event, version);
-            log.info("Saving event with ID={} for aggregate with ID={} with hash={}", event.getId(),
+            log.info("Saving event {} for aggregate with ID={} with hash={}", event,
                 event.getAggregateId(), wrapper.getEventHash());
             repository.save(wrapper);
         } catch (final DuplicateKeyException e) {
@@ -36,6 +37,7 @@ public class MongoEventStore implements EventStore {
     public List<Event> getForAggregate(final UUID aggregateId) {
         return repository.findByAggregateId(aggregateId)
             .map(EventWrapper::getEvent)
+            .peek(e -> log.info("Loading event {} for aggregate {}", e, aggregateId))
             .collect(Collectors.toList());
     }
 
@@ -43,6 +45,7 @@ public class MongoEventStore implements EventStore {
     public List<Event> getForAggregate(final UUID aggregateId, final int version) {
         return repository.findByAggregateId(aggregateId, version)
             .map(EventWrapper::getEvent)
+            .peek(e -> log.info("Loading event {} for aggregate {}", e, aggregateId))
             .collect(Collectors.toList());
     }
 }

@@ -1,27 +1,20 @@
 package io.yasiekz.github.eventsurcingexample.domain.event;
 
 import io.yasiekz.github.eventsurcingexample.domain.aggregate.EventSourcedAggregate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @EqualsAndHashCode(of = {"id"})
+@Getter
+@RequiredArgsConstructor
 public abstract class Event<T extends EventSourcedAggregate> {
 
     private final UUID id;
     private final UUID aggregateId;
-
-    protected Event(final UUID id, final UUID aggregateId) {
-        this.id = id;
-        this.aggregateId = aggregateId;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getAggregateId() {
-        return aggregateId;
-    }
+    private final LocalDateTime occuredAt;
 
     public abstract void apply(final T aggregate);
 }

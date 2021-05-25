@@ -1,6 +1,7 @@
 package io.yasiekz.github.eventsurcingexample.domain.aggregate.stub;
 
 import io.yasiekz.github.eventsurcingexample.domain.aggregate.EventSourcedAggregate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class FakeAggregate extends EventSourcedAggregate {
@@ -9,7 +10,9 @@ public class FakeAggregate extends EventSourcedAggregate {
     private String description;
 
     public FakeAggregate(final UUID id) {
-        recordEvent(new FakeAggregateCreated(UUID.randomUUID(), id));
+        final FakeAggregateCreated event = new FakeAggregateCreated(UUID.randomUUID(), id, LocalDateTime.now());
+        recordEvent(event);
+        apply(event);
     }
 
     FakeAggregate() {
@@ -17,7 +20,10 @@ public class FakeAggregate extends EventSourcedAggregate {
     }
 
     public void changeDescription(final String newDescription) {
-        recordEvent(new FakeAggregateChanged(UUID.randomUUID(), id, newDescription));
+        final FakeAggregateChanged event = new FakeAggregateChanged(UUID.randomUUID(), id, newDescription,
+            LocalDateTime.now());
+        apply(event);
+        recordEvent(event);
     }
 
     public UUID getId() {
@@ -28,11 +34,11 @@ public class FakeAggregate extends EventSourcedAggregate {
         return description;
     }
 
-    void applyEvent(FakeAggregateCreated event) {
+    void apply(FakeAggregateCreated event) {
         id = event.getAggregateId();
     }
 
-    void applyEvent(FakeAggregateChanged event) {
+    void apply(FakeAggregateChanged event) {
         description = event.getNewDescription();
     }
 }

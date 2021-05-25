@@ -12,6 +12,7 @@ import io.yasiekz.github.eventsurcingexample.domain.aggregate.stub.FakeAggregate
 import io.yasiekz.github.eventsurcingexample.domain.aggregate.stub.FakeEventSourcedRepository;
 import io.yasiekz.github.eventsurcingexample.domain.event.Event;
 import io.yasiekz.github.eventsurcingexample.domain.event.EventStore;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,8 +60,8 @@ class EventSourcedRepositoryTest {
 
         // given
         final List<Event> events = List.of(
-            new FakeAggregateCreated(UUID.randomUUID(), AGGREGATE_ID),
-            new FakeAggregateChanged(UUID.randomUUID(), AGGREGATE_ID, "desc1")
+            new FakeAggregateCreated(UUID.randomUUID(), AGGREGATE_ID, LocalDateTime.now()),
+            new FakeAggregateChanged(UUID.randomUUID(), AGGREGATE_ID, "desc1", LocalDateTime.now())
         );
         when(eventStore.getForAggregate(any())).thenReturn(events);
         final FakeAggregate aggregate = repository.load(AGGREGATE_ID);
@@ -79,9 +80,9 @@ class EventSourcedRepositoryTest {
 
         // given
         final List<Event> events = List.of(
-            new FakeAggregateCreated(UUID.randomUUID(), AGGREGATE_ID),
-            new FakeAggregateChanged(UUID.randomUUID(), AGGREGATE_ID, "desc1"),
-            new FakeAggregateChanged(UUID.randomUUID(), AGGREGATE_ID, "desc2")
+            new FakeAggregateCreated(UUID.randomUUID(), AGGREGATE_ID, LocalDateTime.now()),
+            new FakeAggregateChanged(UUID.randomUUID(), AGGREGATE_ID, "desc1", LocalDateTime.now()),
+            new FakeAggregateChanged(UUID.randomUUID(), AGGREGATE_ID, "desc2", LocalDateTime.now())
         );
         when(eventStore.getForAggregate(any())).thenReturn(events);
 

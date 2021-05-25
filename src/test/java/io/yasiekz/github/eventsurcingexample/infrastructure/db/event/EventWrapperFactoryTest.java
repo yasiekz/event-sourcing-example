@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.EventHashFactory;
 import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.EventWrapper;
 import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.EventWrapperFactory;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ class EventWrapperFactoryTest {
 
         // given
         when(eventHashFactory.create(eq(EVENT_ID), eq(AGGREGATE_ID), eq(1))).thenReturn(HASH);
-        final FakeEvent fakeEvent = new FakeEvent(EVENT_ID, AGGREGATE_ID, DESCRIPTION);
+        final FakeEvent fakeEvent = new FakeEvent(EVENT_ID, AGGREGATE_ID, DESCRIPTION, LocalDateTime.now());
 
         // when
         final EventWrapper result = eventWrapperFactory.create(fakeEvent, 1);
