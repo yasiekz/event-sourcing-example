@@ -1,10 +1,11 @@
 package io.yasiekz.github.eventsurcingexample.domain.event;
 
+import io.yasiekz.github.eventsurcingexample.domain.aggregate.EventSourcedAggregate;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(of = {"id"})
-public abstract class Event {
+public abstract class Event<T extends EventSourcedAggregate> {
 
     private final UUID id;
     private final UUID aggregateId;
@@ -21,4 +22,6 @@ public abstract class Event {
     public UUID getAggregateId() {
         return aggregateId;
     }
+
+    public abstract void apply(final T aggregate);
 }

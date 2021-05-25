@@ -6,20 +6,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class EventSourcedAggregate<T extends Event> {
+public abstract class EventSourcedAggregate {
 
-    private final List<T> events = new ArrayList<>();
+    private final List<Event<?>> events = new ArrayList<>();
     private final List<UUID> pastEvents = new ArrayList<>();
     private int version = 0;
+
+    protected EventSourcedAggregate() {
+    }
 
     public void markEventsAsSaved() {
         version += getRecordedEvents().size();
         clearRecordedEvents();
     }
 
-    public final EventSourcedAggregate<?> applyPastEvent(T event) {
+    public final EventSourcedAggregate applyPastEvent(Event<EventSourcedAggregate> event) {
         if (!pastEvents.contains(event.getId())) {
-            incrementVersion();
+            version++;
             doApplyPastEvent(event);
             pastEvents.add(event.getId());
         }
@@ -27,7 +30,7 @@ public abstract class EventSourcedAggregate<T extends Event> {
         return this;
     }
 
-    public List<T> getRecordedEvents() {
+    public List<Event<?>> getRecordedEvents() {
         return Collections.unmodifiableList(events);
     }
 
@@ -35,14 +38,12 @@ public abstract class EventSourcedAggregate<T extends Event> {
         return version;
     }
 
-    protected abstract void doApplyPastEvent(T event);
-
-    protected void recordEvent(T event) {
-        events.add(event);
+    protected void doApplyPastEvent(Event<EventSourcedAggregate> event) {
+        event.apply(this);
     }
 
-    private void incrementVersion() {
-        version++;
+    protected void recordEvent(Event<?> event) {
+        events.add(event);
     }
 
     private void clearRecordedEvents() {
