@@ -1,4 +1,4 @@
-package io.yasiekz.github.eventsurcingexample.infrastructure.db.event;
+package io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;

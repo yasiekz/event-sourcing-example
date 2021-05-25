@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.yasiekz.github.eventsurcingexample.domain.event.Event;
 import io.yasiekz.github.eventsurcingexample.domain.event.EventDuplicatedException;
+import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.EventMongoRepository;
+import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.MongoEventStore;
 import io.yasiekz.github.eventsurcingexample.initializer.MongoFromDockerInitializer;
 import java.util.List;
 import java.util.UUID;

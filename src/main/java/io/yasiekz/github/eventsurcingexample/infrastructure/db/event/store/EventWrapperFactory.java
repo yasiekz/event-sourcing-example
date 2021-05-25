@@ -1,4 +1,4 @@
-package io.yasiekz.github.eventsurcingexample.infrastructure.db.event;
+package io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store;
 
 import io.yasiekz.github.eventsurcingexample.domain.event.Event;
 import lombok.RequiredArgsConstructor;

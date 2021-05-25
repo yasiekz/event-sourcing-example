@@ -5,6 +5,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.EventHashFactory;
+import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.EventWrapper;
+import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.EventWrapperFactory;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

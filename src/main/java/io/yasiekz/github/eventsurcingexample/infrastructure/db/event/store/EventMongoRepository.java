@@ -1,6 +1,5 @@
-package io.yasiekz.github.eventsurcingexample.infrastructure.db.event;
+package io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.springframework.data.mongodb.repository.MongoRepository;
