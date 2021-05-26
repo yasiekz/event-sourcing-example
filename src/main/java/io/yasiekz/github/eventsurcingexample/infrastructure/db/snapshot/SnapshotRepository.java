@@ -14,6 +14,7 @@ public abstract class SnapshotRepository<T extends EventSourcedAggregate> implem
 
     @Override
     public Snapshot<T> load(final UUID aggregateId) {
+        log.info("Loading snapshot for aggregate {}", aggregateId);
         return snapshotMongoRepository.findTopByAggregateId(aggregateId);
     }
 
