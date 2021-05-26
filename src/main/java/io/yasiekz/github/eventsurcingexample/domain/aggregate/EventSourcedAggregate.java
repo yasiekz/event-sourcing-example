@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.annotation.Transient;
 
 public abstract class EventSourcedAggregate {
 
+    @Transient
     private final List<Event<?>> events = new ArrayList<>();
+    @Transient
     private final List<UUID> pastEvents = new ArrayList<>();
     private int version = 0;
 

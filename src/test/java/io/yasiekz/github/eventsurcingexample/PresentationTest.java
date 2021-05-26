@@ -1,7 +1,11 @@
 package io.yasiekz.github.eventsurcingexample;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.yasiekz.github.eventsurcingexample.domain.aggregate.payment.*;
 import io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store.EventMongoRepository;
+import io.yasiekz.github.eventsurcingexample.infrastructure.db.snapshot.SnapshotGenerator;
+import io.yasiekz.github.eventsurcingexample.infrastructure.db.snapshot.SnapshotMongoRepository;
 import io.yasiekz.github.eventsurcingexample.initializer.MongoFromDockerInitializer;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -23,9 +27,16 @@ public class PresentationTest {
     @Autowired
     private EventMongoRepository eventMongoRepository;
 
+    @Autowired
+    private SnapshotGenerator snapshotGenerator;
+
+    @Autowired
+    private SnapshotMongoRepository<Payment> snapshotRepository;
+
     @AfterEach
     void tearDown() {
         eventMongoRepository.deleteAll();
+        snapshotRepository.deleteAll();
     }
 
     @Test
@@ -57,5 +68,26 @@ public class PresentationTest {
         result.resolveAmlScoring(AmlScoring.builder().withScore(0).build());
         result.markAsPspConfirmed(PspResult.builder().pspId(UUID.randomUUID()).build());
         paymentRepository.save(result);
+    }
+
+    @Test
+    @DisplayName("Crate two aggregates and make snapshot for them")
+    void t3() {
+
+        // create aggregates
+        final Payment payment1 = TestPaymentProvider.create(PAYMENT_ID);
+        payment1.modify(TestPaymentProvider.createSide(), TestPaymentProvider.createSide());
+        payment1.modify(TestPaymentProvider.createSide(), TestPaymentProvider.createSide());
+        final Payment payment2 = TestPaymentProvider.create(UUID.randomUUID());
+        payment2.modify(TestPaymentProvider.createSide(), TestPaymentProvider.createSide());
+        payment2.modify(TestPaymentProvider.createSide(), TestPaymentProvider.createSide());
+        paymentRepository.save(payment1);
+        paymentRepository.save(payment2);
+
+        // generate snapshots for them
+        snapshotGenerator.generate();
+
+        // check if there are 2 snapshots
+        assertEquals(2, snapshotRepository.count());
     }
 }

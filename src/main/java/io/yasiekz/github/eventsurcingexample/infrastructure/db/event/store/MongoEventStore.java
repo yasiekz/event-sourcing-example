@@ -3,19 +3,28 @@ package io.yasiekz.github.eventsurcingexample.infrastructure.db.event.store;
 import io.yasiekz.github.eventsurcingexample.domain.event.Event;
 import io.yasiekz.github.eventsurcingexample.domain.event.EventDuplicatedException;
 import io.yasiekz.github.eventsurcingexample.domain.event.EventStore;
+import io.yasiekz.github.eventsurcingexample.infrastructure.db.snapshot.EventToSnapshotGenerationReader;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("rawtypes")
 @RequiredArgsConstructor
 @Slf4j
 @Component
-public class MongoEventStore implements EventStore {
+public class MongoEventStore implements EventStore, EventToSnapshotGenerationReader {
+
+    private static final String SORT_BY_FIELD = "_id";
+    private static final int PAGE_SIZE = 50;
 
     private final EventMongoRepository repository;
     private final EventWrapperFactory eventWrapperFactory;
@@ -47,5 +56,12 @@ public class MongoEventStore implements EventStore {
             .map(EventWrapper::getEvent)
             .peek(e -> log.info("Loading event {} for aggregate {}", e, aggregateId))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public Stream<EventWrapper> findEventsForChunkAfterObjectId(final String chunkId) {
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE, Sort.by(Direction.ASC, SORT_BY_FIELD));
+
+        return repository.findByChunkId(chunkId, pageable);
     }
 }

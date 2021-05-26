@@ -40,12 +40,13 @@ public class EventWrapper {
     private String chunkId;
 
     @Builder(setterPrefix = "with")
-    public EventWrapper(final Event event, final int version, final String eventHash) {
+    public EventWrapper(final Event event, final int version, final String eventHash, final String chunkId) {
         aggregateId = event.getAggregateId();
         this.eventHash = eventHash;
         this.eventId = event.getId();
         this.event = event;
         this.version = version;
+        this.chunkId = chunkId;
         createdAt = LocalDateTime.now();
     }
 }

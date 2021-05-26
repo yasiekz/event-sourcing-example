@@ -16,6 +16,7 @@ public class EventWrapperFactory {
             .withEvent(event)
             .withEventHash(eventHashFactory.create(event.getId(), event.getAggregateId(), version))
             .withVersion(version)
+            .withChunkId(event.getAggregateId().toString().substring(0, 1))
             .build();
     }
 }
